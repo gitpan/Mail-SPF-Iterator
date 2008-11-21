@@ -8,4 +8,5 @@ t/02_spf-test-suite.t
 t/make-testpl.pl
 t/rfc4408-tests.pl
 t/rfc4408-tests.yml
+samples/spflookup.pl
 META.yml                                 Module meta-data (added by MakeMaker)
