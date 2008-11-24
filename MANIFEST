@@ -11,4 +11,5 @@ t/misc.pl
 t/misc.yml
 t/rfc4408-tests.pl
 t/rfc4408-tests.yml
+t/rfc4408-tests.LICENSE
 META.yml                                 Module meta-data (added by MakeMaker)
