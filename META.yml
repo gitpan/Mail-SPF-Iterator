@@ -1,13 +1,13 @@
 --- #YAML:1.0
 name:                Mail-SPF-Iterator
-version:             1.00
+version:             1.01
 abstract:            ~
 license:             ~
 author:              ~
 generated_by:        ExtUtils::MakeMaker version 6.44
 distribution_type:   module
 requires:     
-    Net::DNS:                      0.56
+    Net::DNS:                      0.62
     URI:                           0
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html

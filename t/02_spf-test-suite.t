@@ -60,7 +60,7 @@ for my $use_additionals ('with additionals','') {
 
 			my $spec = delete $d{spec};
 			$spec = [ $spec ] if ! ref($spec);
-			my $comment =  "$desc | $tname (@$spec) (@$result) $use_additionals";
+ 			my $comment = "$desc | $tname (@$spec) (@$result) $use_additionals";
 
 			if ( ! $can_ip6 and ( $d{host} =~m{::} or $tname =~m{ip6} )) {
 				print "ok # skip Socket6.pm not installed\n";
@@ -88,15 +88,13 @@ for my $use_additionals ('with additionals','') {
 
 				my ($status,@ans) = $spf->next;
 				while ( ! $status ) {
-					my ($cbid,@query) = @ans;
+					my @query = @ans;
 					die "no queries" if ! @query;
 					for my $q (@query) {
 						#DEBUG( "next query >>> ".($q->question)[0]->string );
 						my $answer = $resolver->send( $q );
-						($status,@ans) = $spf->next( $cbid,$answer
-							? $answer
-							: [ $q, $resolver->errorstring ]
-						);
+						($status,@ans) = $spf->next(
+							$answer || [ $q, $resolver->errorstring ]);
 						DEBUG( "status=$status" ) if $status;
 						last if $status or @ans;
 					}
@@ -115,14 +113,15 @@ for my $use_additionals ('with additionals','') {
 			if ( ! grep { $status eq $_ } @$result ) {
 				print "not ok # $comment - got $status\n";
 				$debug =~s{^}{| }mg;
-				print Dumper($tdata),$debug.
-					Dumper({ info => $info, hash => $hash, explain => $explain });
+				print Dumper($tdata),$debug.Dumper(
+					{ info => $info, hash => $hash, explain => $explain });
 				next;
 			}
 
 			if ( $explanation ) {
 				if ( $explain ne $explanation ) {
-					print "not ok # $comment - exp should be '$explanation' was '$explain'\n";
+					print "not ok # $comment - ".
+						"exp should be '$explanation' was '$explain'\n";
 					$debug =~s{^}{| }mg;
 					print Dumper($tdata),$debug;
 					next;
@@ -136,8 +135,8 @@ for my $use_additionals ('with additionals','') {
 				} else {
 					print "not ok # $comment - got $status\n";
 					$debug =~s{^}{| }mg;
-					print Dumper($tdata),$debug.
-						Dumper({ info => $info, hash => $hash, explain => $explain });
+					print Dumper($tdata),$debug.Dumper(
+						{ info => $info, hash => $hash, explain => $explain });
 				}
 				next;
 			}
@@ -197,6 +196,7 @@ sub send {
 	my $packet = Net::DNS::Packet->new($qname, $qtype, $qclass);
 	$packet->header->qr(1);
 	$packet->header->aa(1);
+	$packet->header->id($pkt->header->id);
 
 	my (%ans,$timeout,@answer,@cname);
 	while (1) {
@@ -286,7 +286,7 @@ sub send {
 			$packet->push(answer => @answer);
 			$packet->push(additional => @additional) if @additional;
 		}
-		#DEBUG( $packet->string );
+		DEBUG( $packet->string );
 		$packet->header->rcode('NOERROR');
 		return $packet;
 	}
@@ -296,4 +296,3 @@ sub send {
 	$packet->header->rcode('NXDOMAIN');
 	return $packet;
 }
-
