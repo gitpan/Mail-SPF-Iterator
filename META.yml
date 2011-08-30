@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Mail-SPF-Iterator
-version:            1.09
+version:            1.10
 abstract:           ~
 author:  []
 license:            unknown
